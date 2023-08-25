@@ -12,23 +12,28 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class LoadingService {
-  state$ = new BehaviorSubject(false);
+  #state$ = new BehaviorSubject(false);
+  state$ = this.#state$.asObservable();
 
   constructor(private router: Router) {
     this.router.events.subscribe((event) => {
       switch (true) {
         case event instanceof NavigationStart: {
-          this.state$.next(true);
+          this.#state$.next(true);
           break;
         }
 
         case event instanceof NavigationEnd:
         case event instanceof NavigationCancel:
         case event instanceof NavigationError: {
-          this.state$.next(false);
+          this.#state$.next(false);
           break;
         }
       }
     });
+  }
+
+  setLoadingState(value: boolean) {
+    this.#state$.next(value);
   }
 }

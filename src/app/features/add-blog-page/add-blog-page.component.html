@@ -1,1 +1,48 @@
-<p>add-blog-page works!</p>
+<ng-container
+  class="blog-container"
+  *ngIf="blogStateService.state$ | async as state"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="blog-input">
+      <ng-container class="error-message" *ngIf="state.error" color="warn">
+        Hoppala da ging woll was schief es konnte nich abgspeichert werden,
+        bitte versuche es an einem Späteren Zeitpunkt
+      </ng-container>
+
+      <button
+        [disabled]="!form.valid"
+        class="submit-button"
+        mat-raised-button
+        color="primary"
+      >
+        Blog Veröffentlichen
+      </button>
+      <button
+        mat-raised-button
+        color="secondary"
+        (click)="form.reset(); (false)"
+      >
+        Reset
+      </button>
+      <mat-form-field appearance="fill">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" />
+        <mat-error>
+          <span *ngIf="form?.get('title')?.errors?.['maxlength']"
+            >Titel zu Lang</span
+          >
+          <span *ngIf="form?.get('title')?.errors?.['required']"
+            >Invalid Title</span
+          >
+          <span *ngIf="form?.get('title')?.errors?.['NotUseNameFromDev']"
+            >Sie Haben ein Easter Egg gefunden</span
+          >
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Erzähle deine Geschichte</mat-label>
+        <textarea matInput rows="20" formControlName="content"></textarea>
+      </mat-form-field>
+    </div>
+  </form>
+</ng-container>

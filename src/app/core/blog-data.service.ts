@@ -20,6 +20,13 @@ const BlogArraySchema = z.array(BlogSchema);
 
 export type Blog = z.infer<typeof BlogSchema>;
 
+const CreatedBlogSchema = z.object({
+  title: z.string(),
+  content: z.string(),
+});
+
+export type CreatedBlog = z.infer<typeof CreatedBlogSchema>;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -30,5 +37,13 @@ export class BlogDataService {
     return this.httpClient
       .get<Blog[]>(`${environment.serviceUrl}/entries`)
       .pipe(map((blogs) => BlogArraySchema.parse(blogs)));
+  }
+
+  async addblog(blog: CreatedBlog) {
+    CreatedBlogSchema.parse(blog);
+    return this.httpClient.post<void>(
+      `${environment.serviceUrl}/entries`,
+      blog
+    );
   }
 }
